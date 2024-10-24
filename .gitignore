@@ -38,3 +38,8 @@ yarn-error.log*
 *.pem
 
 */.idea
+/.idea/dbnavigator.xml
+/.idea/elementor.iml
+/.idea/modules.xml
+/package-lock.json
+/.idea/vcs.xml
