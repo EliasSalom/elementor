@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
+import {AlbumDao} from "./album.dao";
 
 @Injectable()
 export class AlbumService {
-  create(createAlbumDto: CreateAlbumDto) {
-    return 'This action adds a new album';
+  constructor(private readonly albumDao: AlbumDao) {
+  }
+  create(id: string,data) {
+    return this.albumDao.createAlbum(id,data);
   }
 
-  findAll() {
-    return `This action returns all album`;
+  // findAll() {
+  //   return this.albumDao.;
+  // }
+
+  findOne(id: string) {
+    return this.albumDao.getAlbumById(id);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} album`;
+  update(id: string, updateAlbumDto) {
+    return this.albumDao.updateAlbum(id, updateAlbumDto);
   }
 
-  update(id: number, updateAlbumDto: UpdateAlbumDto) {
-    return `This action updates a #${id} album`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} album`;
+  remove(id: string) {
+    return this.albumDao.deleteAlbum(id);
   }
 }
