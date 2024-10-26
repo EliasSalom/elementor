@@ -3,3 +3,6 @@
 /workspace.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+/codeStyles/codeStyleConfig.xml
+/prettier.xml
+/codeStyles/Project.xml
