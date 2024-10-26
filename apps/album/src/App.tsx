@@ -1,5 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material";
 import { UserPage } from "./pages/User/UserPage.tsx";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const theme = createTheme({
@@ -11,6 +12,7 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
+      <ToastContainer position="top-right" />
       <UserPage />
     </ThemeProvider>
   );
