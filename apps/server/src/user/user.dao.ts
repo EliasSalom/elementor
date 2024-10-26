@@ -1,31 +1,45 @@
-import {Injectable} from "@nestjs/common";
-import {InjectModel} from "@nestjs/mongoose";
-import {User} from "./schemas/User.schema";
-import {Model} from "mongoose";
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class UserDao {
-    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(private readonly prismaClient: PrismaClient) {}
 
-    async createUser(data: User): Promise<User> {
-        return new this.userModel(data).save();
-    }
+  async createUser(data) {
+    return this.prismaClient.user.create({ data });
+  }
 
-    async getUserWithAlbums(userId: string): Promise<User> {
-        return this.userModel.findById(userId).populate('albums').exec();
-    }
+  async updateUser(id: string, data) {
+    return this.prismaClient.user.update({
+      where: { id },
+      data,
+    });
+  }
 
-    async getAllUsers(): Promise<User[]> {
-        return this.userModel.find({ deletedAt: null }).exec();
-    }
+  async deleteUser(id: string) {
+    return this.prismaClient.user.update({
+      where: {
+        id,
+      },
+      data: { deletedAt: new Date() },
+    });
+  }
 
-    async updateUser(userId: string, updateData: Partial<User>): Promise<User> {
-        return await this.userModel
-            .findByIdAndUpdate(userId, updateData, {new: true})
-            .exec();
-    }
+  async getUserById(id: string) {
+    return this.prismaClient.user.findUnique({
+      where: { id },
+      include: {
+        albums: {
+          include: { images: true },
+        },
+      },
+    });
+  }
 
-    async deleteUser(userId: string) {
-        return await this.userModel.findByIdAndUpdate(userId, {deletedAt:new Date()},{new: true}).exec();
-    }
+  async getAllUser() {
+    return this.prismaClient.user.findMany({
+      take: 20,
+      include: { albums: true },
+    });
+  }
 }

@@ -1,28 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { UpdateAlbumDto } from './dto/update-album.dto';
-import {AlbumDao} from "./album.dao";
+import { AlbumDao } from './dao/album.dao';
+import { ImageDao } from './dao/image.dao';
+import { CreateAlbumDto } from './dto/create-album.dto';
 
 @Injectable()
 export class AlbumService {
-  constructor(private readonly albumDao: AlbumDao) {
-  }
-  create(id: string,data) {
-    return this.albumDao.createAlbum(id,data);
+  constructor(
+    private readonly albumDao: AlbumDao,
+    private readonly imageDao: ImageDao,
+  ) {}
+  async create(id: string, data: CreateAlbumDto) {
+    const { userId, title, url } = data;
+    const albumData = {
+      userId,
+      title,
+    };
+    const album = await this.albumDao.createAlbum(id, albumData);
+    const image = await this.imageDao.createImage(album.id, url);
+    return { album, image };
   }
 
-  // findAll() {
-  //   return this.albumDao.;
-  // }
+  getAllAlbum(userId: string) {
+    return this.albumDao.getAllAlbums(userId);
+  }
 
-  findOne(id: string) {
+  getAlbumById(id: string) {
     return this.albumDao.getAlbumById(id);
   }
 
-  update(id: string, updateAlbumDto) {
-    return this.albumDao.updateAlbum(id, updateAlbumDto);
+  updateAlbum(id: string, updateAlbum) {
+    return this.albumDao.updateAlbum(id, updateAlbum);
   }
 
-  remove(id: string) {
+  deleteAlbum(id: string) {
     return this.albumDao.deleteAlbum(id);
   }
 }

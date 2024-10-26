@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import {MongooseModule} from "@nestjs/mongoose";
 import { UserModule } from './user/user.module';
 import { AlbumModule } from './album/album.module';
+import {ConfigModule} from "@nestjs/config";
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb+srv://test:123@cluster0.id10m.mongodb.net/?retryWrites=true&w=majority'), UserModule, AlbumModule],
+  imports: [ConfigModule.forRoot({
+    cache: true,
+    isGlobal: true,
+  }),MongooseModule.forRoot(process.env.DATABASE_URL), UserModule, AlbumModule],
   controllers: [],
   providers: [],
 })
