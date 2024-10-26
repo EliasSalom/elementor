@@ -43,3 +43,6 @@ yarn-error.log*
 /.idea/modules.xml
 /package-lock.json
 /.idea/vcs.xml
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/prettier.xml
+/.idea/codeStyles/Project.xml

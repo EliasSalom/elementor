@@ -1,15 +1,27 @@
 import { Module } from '@nestjs/common';
-import {MongooseModule} from "@nestjs/mongoose";
-import { UserModule } from './user/user.module';
-import { AlbumModule } from './album/album.module';
-import {ConfigModule} from "@nestjs/config";
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    cache: true,
-    isGlobal: true,
-  }),MongooseModule.forRoot(process.env.DATABASE_URL), UserModule, AlbumModule],
+  imports: [
+    ConfigModule.forRoot({
+      cache: true,
+      isGlobal: true,
+    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
+  ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
