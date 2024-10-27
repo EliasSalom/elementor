@@ -1,7 +1,15 @@
-import { Box, CircularProgress, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { Carousel } from "react-responsive-carousel";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
+import { useCreateImage } from "../../api/album/postRequest.ts";
 
 interface Props {
   albumId: string;
@@ -17,6 +25,12 @@ interface Props {
 
 export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
   const { data, isLoading, error } = useGetAlbum(albumId);
+  console.log(data);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const { mutate } = useCreateImage();
+  const createImage = () => {
+    mutate({ albumId, url: imageUrl });
+  };
   return (
     <Modal open={open} onClose={onClose}>
       <Box
@@ -30,6 +44,7 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
           borderRadius: "8px",
         }}
       >
+        <Button>add photos</Button>
         {isLoading ? (
           <Box
             sx={{
@@ -45,9 +60,9 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
           <Typography color="error" align="center" variant="h6">
             Failed to load album. Please try again later.
           </Typography>
-        ) : data && data.length > 0 ? (
+        ) : data && data.images && data.images.length > 0 ? (
           <Carousel>
-            {data.map((image, index) => (
+            {data.images.map((image, index) => (
               <Box key={index} sx={{ textAlign: "center" }}>
                 <img
                   src={image.url}
@@ -63,9 +78,22 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
             ))}
           </Carousel>
         ) : (
-          <Typography align="center" variant="h6">
-            No images available in this album.
-          </Typography>
+          <Box>
+            <Typography align="center" variant="h6">
+              No images available in this album.
+            </Typography>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="url"
+              type="text"
+              fullWidth
+              variant="outlined"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+            <Button onClick={createImage}>save</Button>
+          </Box>
         )}
       </Box>
     </Modal>
