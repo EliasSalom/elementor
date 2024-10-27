@@ -5,10 +5,10 @@ import { PrismaClient } from '@prisma/client';
 export class AlbumDao {
   constructor(private readonly prismaClient: PrismaClient) {}
 
-  async createAlbum(id: string, album) {
+  async createAlbum(id: string, title: string) {
     const data = {
       userId: id,
-      ...album,
+      title,
     };
     return this.prismaClient.album.create({ data });
   }
@@ -27,8 +27,11 @@ export class AlbumDao {
     });
   }
 
-  async getAlbumById(id) {
-    return this.prismaClient.album.findUnique(id);
+  async getAlbumById(id: string) {
+    return this.prismaClient.album.findUnique({
+      where: { id },
+      include: { images: true },
+    });
   }
 
   async getAllAlbums(userID) {

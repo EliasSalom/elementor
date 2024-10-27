@@ -11,11 +11,7 @@ export class AlbumService {
   ) {}
   async create(id: string, data: CreateAlbumDto) {
     const { userId, title, url } = data;
-    const albumData = {
-      userId,
-      title,
-    };
-    const album = await this.albumDao.createAlbum(id, albumData);
+    const album = await this.albumDao.createAlbum(id, title);
     const image = await this.imageDao.createImage(album.id, url);
     return { album, image };
   }
