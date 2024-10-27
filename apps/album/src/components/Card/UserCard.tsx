@@ -1,29 +1,33 @@
-import { FC, useState } from "react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Collapse,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import { AlbumCard } from "./AlbumCard.tsx";
 import { User } from "../../api/type.ts";
 import { AlbumDialog } from "../Modal/AlbumModal.tsx";
+import { useGetAllAlbum } from "../../api/album/getRequest.ts";
 
 interface Props {
   user: User;
+  setAlbumId?: Dispatch<SetStateAction<string>>;
 }
 export const UserCard: FC<Props> = ({ user }) => {
   const { albums, id, name } = user;
+  const { data, isLoading } = useGetAllAlbum(user.id);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
 
-  const handleDialogOpen = () => setIsDialogOpen(true);
-  const handleDialogClose = () => setIsDialogOpen(false);
+  const toggleAlbumDialog = () => setIsDialogOpen((prev) => !prev);
   return (
     <Card
       sx={{
@@ -57,20 +61,33 @@ export const UserCard: FC<Props> = ({ user }) => {
           <Button variant="contained" onClick={toggleExpand}>
             {isExpanded ? "Hide Albums" : "Show Albums"}
           </Button>
-          <Button variant="outlined" onClick={handleDialogOpen}>
+          <Button variant="outlined" onClick={toggleAlbumDialog}>
             Add New Album
           </Button>
         </Box>
       </Box>
       <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          {albums &&
-            albums?.map((album) => <AlbumCard key={album.id} album={album} />)}
+        <CardContent
+          sx={{ display: "flex", margin: 4, justifyContent: "space-between" }}
+        >
+          {!isLoading && data ? (
+            data.map((album) => (
+              <AlbumCard
+                onClick={() => {
+                  console.log(album.id);
+                }}
+                key={album.id}
+                album={album}
+              />
+            ))
+          ) : (
+            <Skeleton />
+          )}
         </CardContent>
       </Collapse>
       <AlbumDialog
         open={isDialogOpen}
-        onClose={handleDialogClose}
+        onClose={toggleAlbumDialog}
         userId={id}
       />
     </Card>
