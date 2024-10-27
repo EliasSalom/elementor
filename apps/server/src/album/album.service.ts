@@ -28,6 +28,10 @@ export class AlbumService {
     return this.albumDao.updateAlbum(id, updateAlbum);
   }
 
+  getAllImages(albumId: string) {
+    return this.imageDao.getAllImages(albumId);
+  }
+
   deleteAlbum(id: string) {
     return this.albumDao.deleteAlbum(id);
   }

@@ -1,33 +1,41 @@
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { FC, useState } from "react";
 import {
   Box,
   Button,
   Card,
   CardContent,
   Collapse,
-  Skeleton,
   Typography,
 } from "@mui/material";
 import { AlbumCard } from "./AlbumCard.tsx";
 import { User } from "../../api/type.ts";
 import { AlbumDialog } from "../Modal/AlbumModal.tsx";
-import { useGetAllAlbum } from "../../api/album/getRequest.ts";
+import { ImageModal } from "../Modal/ImageModal.tsx";
 
 interface Props {
   user: User;
-  setAlbumId?: Dispatch<SetStateAction<string>>;
 }
 export const UserCard: FC<Props> = ({ user }) => {
   const { albums, id, name } = user;
-  const { data, isLoading } = useGetAllAlbum(user.id);
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [albumId, setAlbumId] = useState<string>();
+  const [state, setState] = useState({
+    isExpanded: false,
+    isDialogOpen: false,
+    isOpen: false,
+  });
+  const toggleImageDialog = () =>
+    setState((prevState) => ({ ...prevState, isOpen: !prevState.isOpen }));
+  const toggleExpand = () =>
+    setState((prevState) => ({
+      ...prevState,
+      isExpanded: !prevState.isExpanded,
+    }));
 
-  const toggleExpand = () => {
-    setIsExpanded((prev) => !prev);
-  };
-
-  const toggleAlbumDialog = () => setIsDialogOpen((prev) => !prev);
+  const toggleAlbumDialog = () =>
+    setState((prevState) => ({
+      ...prevState,
+      isDialogOpen: !prevState.isDialogOpen,
+    }));
   return (
     <Card
       sx={{
@@ -58,35 +66,43 @@ export const UserCard: FC<Props> = ({ user }) => {
           </Typography>
         </Box>
         <Box>
-          <Button variant="contained" onClick={toggleExpand}>
-            {isExpanded ? "Hide Albums" : "Show Albums"}
+          <Button
+            sx={{ marginRight: 5 }}
+            variant="contained"
+            onClick={toggleExpand}
+          >
+            {state.isExpanded ? "Hide Albums" : "Show Albums"}
           </Button>
           <Button variant="outlined" onClick={toggleAlbumDialog}>
             Add New Album
           </Button>
         </Box>
       </Box>
-      <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+      <Collapse in={state.isExpanded} timeout="auto" unmountOnExit>
         <CardContent
           sx={{ display: "flex", margin: 4, justifyContent: "space-between" }}
         >
-          {!isLoading && data ? (
-            data.map((album) => (
-              <AlbumCard
-                onClick={() => {
-                  console.log(album.id);
-                }}
-                key={album.id}
-                album={album}
-              />
-            ))
-          ) : (
-            <Skeleton />
-          )}
+          {user.albums.map((album) => (
+            <AlbumCard
+              onClick={() => {
+                setAlbumId(album.id as string);
+                toggleImageDialog();
+              }}
+              key={album.id}
+              album={album}
+            />
+          ))}
         </CardContent>
       </Collapse>
+      {albumId && (
+        <ImageModal
+          albumId={albumId}
+          open={state.isOpen}
+          onClose={toggleImageDialog}
+        />
+      )}
       <AlbumDialog
-        open={isDialogOpen}
+        open={state.isDialogOpen}
         onClose={toggleAlbumDialog}
         userId={id}
       />

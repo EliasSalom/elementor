@@ -14,7 +14,7 @@ export class AlbumDao {
   }
 
   async updateAlbum(id: string, data) {
-    return this.prismaClient.user.update({
+    return this.prismaClient.album.update({
       where: { id },
       data,
     });

@@ -32,7 +32,7 @@ export class AlbumController {
 
   @Get('all/:id')
   findMany(@Param('id') id: string) {
-    return this.albumService.getAllAlbum(id);
+    return this.albumService.getAllImages(id);
   }
 
   @Patch(':id')

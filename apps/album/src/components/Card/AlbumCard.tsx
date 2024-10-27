@@ -5,19 +5,19 @@ import {
   Skeleton,
   Typography,
 } from "@mui/material";
-import { FC } from "react";
+import { FC, MouseEventHandler } from "react";
 import { Album } from "../../api/type.ts";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
 
 interface Props {
   album: Album;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }
-export const AlbumCard: FC<Props> = ({ album }) => {
+export const AlbumCard: FC<Props> = ({ album, onClick }) => {
   const { isLoading } = useGetAlbum(album.id as string);
 
   return (
-    <Card sx={{ marginBottom: 2, width: 150, height: 100 }}>
+    <Card onClick={onClick} sx={{ marginBottom: 2, width: 150, height: 100 }}>
       {isLoading ? (
         <Skeleton />
       ) : (
