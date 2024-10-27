@@ -2,11 +2,12 @@ import {
   Box,
   Button,
   CircularProgress,
+  ImageList,
+  ImageListItem,
   Modal,
   TextField,
   Typography,
 } from "@mui/material";
-import { Carousel } from "react-responsive-carousel";
 import { FC, useState } from "react";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
 import { useCreateImage } from "../../api/album/postRequest.ts";
@@ -61,22 +62,18 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
             Failed to load album. Please try again later.
           </Typography>
         ) : data && data.images && data.images.length > 0 ? (
-          <Carousel>
-            {data.images.map((image, index) => (
-              <Box key={index} sx={{ textAlign: "center" }}>
+          <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+            {data.images.map((item) => (
+              <ImageListItem key={item.url}>
                 <img
-                  src={image.url}
-                  alt={`Slide ${index + 1}`}
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    maxHeight: "500px",
-                    borderRadius: "8px",
-                  }}
+                  srcSet={`${item.url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                  src={`${item.url}?w=164&h=164&fit=crop&auto=format`}
+                  alt={item.title}
+                  loading="lazy"
                 />
-              </Box>
+              </ImageListItem>
             ))}
-          </Carousel>
+          </ImageList>
         ) : (
           <Box>
             <Typography align="center" variant="h6">
