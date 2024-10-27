@@ -30,6 +30,11 @@ export class AlbumController {
     return this.albumService.getAlbumById(id);
   }
 
+  @Get('all/:id')
+  findMany(@Param('id') id: string) {
+    return this.albumService.getAllAlbum(id);
+  }
+
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAlbumDto: UpdateAlbumDto) {
     return this.albumService.updateAlbum(id, updateAlbumDto);

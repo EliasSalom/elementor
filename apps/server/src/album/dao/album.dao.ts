@@ -34,10 +34,9 @@ export class AlbumDao {
     });
   }
 
-  async getAllAlbums(userID) {
+  async getAllAlbums(userID: string) {
     return this.prismaClient.album.findMany({
       where: {
-        deletedAt: null,
         userId: userID,
       },
       take: 20,

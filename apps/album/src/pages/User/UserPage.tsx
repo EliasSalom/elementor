@@ -8,6 +8,7 @@ export const UserPage: FC = () => {
   const { data, isLoading } = useGetAllUsers();
   const [isOpen, setIsOpen] = useState(false);
   const [album, setAlbum] = useState<string>("");
+  console.log(album);
   const toggleImageDialog = () => setIsOpen((prev) => !prev);
   return (
     <Container>

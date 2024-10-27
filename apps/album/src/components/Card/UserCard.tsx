@@ -5,18 +5,21 @@ import {
   Card,
   CardContent,
   Collapse,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import { AlbumCard } from "./AlbumCard.tsx";
 import { User } from "../../api/type.ts";
 import { AlbumDialog } from "../Modal/AlbumModal.tsx";
+import { useGetAllAlbum } from "../../api/album/getRequest.ts";
 
 interface Props {
   user: User;
   setAlbumId?: Dispatch<SetStateAction<string>>;
 }
-export const UserCard: FC<Props> = ({ user, setAlbumId }) => {
+export const UserCard: FC<Props> = ({ user }) => {
   const { albums, id, name } = user;
+  const { data, isLoading } = useGetAllAlbum(user.id);
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -67,14 +70,19 @@ export const UserCard: FC<Props> = ({ user, setAlbumId }) => {
         <CardContent
           sx={{ display: "flex", margin: 4, justifyContent: "space-between" }}
         >
-          {albums &&
-            albums?.map((album) => (
+          {!isLoading && data ? (
+            data.map((album) => (
               <AlbumCard
-                onClick={() => setAlbumId?.(album.id as string)}
+                onClick={() => {
+                  console.log(album.id);
+                }}
                 key={album.id}
                 album={album}
               />
-            ))}
+            ))
+          ) : (
+            <Skeleton />
+          )}
         </CardContent>
       </Collapse>
       <AlbumDialog
