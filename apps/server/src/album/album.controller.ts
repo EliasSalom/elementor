@@ -16,8 +16,13 @@ export class AlbumController {
   constructor(private readonly albumService: AlbumService) {}
 
   @Post(':id')
-  create(@Param('id') id: string, @Body() createAlbum: CreateAlbumDto) {
-    return this.albumService.create(id, createAlbum);
+  createAlbum(@Param('id') id: string, @Body() createAlbum: CreateAlbumDto) {
+    return this.albumService.createAlbum(id, createAlbum);
+  }
+
+  @Post('/image/:id')
+  createImage(@Param('id') id: string, @Body() createImage: { url: string }) {
+    return this.albumService.createImage(id, createImage.url);
   }
 
   // @Get()

@@ -1,7 +1,16 @@
-import { Box, CircularProgress, Modal, Typography } from "@mui/material";
-import { Carousel } from "react-responsive-carousel";
-import { FC } from "react";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  ImageList,
+  ImageListItem,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { FC, useState } from "react";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
+import { useCreateImage } from "../../api/album/postRequest.ts";
 
 interface Props {
   albumId: string;
@@ -17,6 +26,12 @@ interface Props {
 
 export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
   const { data, isLoading, error } = useGetAlbum(albumId);
+  console.log(data);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const { mutate } = useCreateImage();
+  const createImage = () => {
+    mutate({ albumId, url: imageUrl });
+  };
   return (
     <Modal open={open} onClose={onClose}>
       <Box
@@ -30,6 +45,7 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
           borderRadius: "8px",
         }}
       >
+        <Button>add photos</Button>
         {isLoading ? (
           <Box
             sx={{
@@ -45,27 +61,36 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
           <Typography color="error" align="center" variant="h6">
             Failed to load album. Please try again later.
           </Typography>
-        ) : data && data.length > 0 ? (
-          <Carousel>
-            {data.map((image, index) => (
-              <Box key={index} sx={{ textAlign: "center" }}>
+        ) : data && data.images && data.images.length > 0 ? (
+          <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
+            {data.images.map((item) => (
+              <ImageListItem key={item.url}>
                 <img
-                  src={image.url}
-                  alt={`Slide ${index + 1}`}
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    maxHeight: "500px",
-                    borderRadius: "8px",
-                  }}
+                  srcSet={`${item.url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                  src={`${item.url}?w=164&h=164&fit=crop&auto=format`}
+                  alt={item.title}
+                  loading="lazy"
                 />
-              </Box>
+              </ImageListItem>
             ))}
-          </Carousel>
+          </ImageList>
         ) : (
-          <Typography align="center" variant="h6">
-            No images available in this album.
-          </Typography>
+          <Box>
+            <Typography align="center" variant="h6">
+              No images available in this album.
+            </Typography>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="url"
+              type="text"
+              fullWidth
+              variant="outlined"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+            />
+            <Button onClick={createImage}>save</Button>
+          </Box>
         )}
       </Box>
     </Modal>

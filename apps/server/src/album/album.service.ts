@@ -9,7 +9,7 @@ export class AlbumService {
     private readonly albumDao: AlbumDao,
     private readonly imageDao: ImageDao,
   ) {}
-  async create(id: string, data: CreateAlbumDto) {
+  async createAlbum(id: string, data: CreateAlbumDto) {
     const { userId, title, url } = data;
     const album = await this.albumDao.createAlbum(id, title);
     const image = await this.imageDao.createImage(album.id, url);
@@ -18,6 +18,10 @@ export class AlbumService {
 
   getAllAlbum(userId: string) {
     return this.albumDao.getAllAlbums(userId);
+  }
+
+  createImage(albumId: string, imageUrl: string) {
+    return this.imageDao.createImage(albumId, imageUrl);
   }
 
   getAlbumById(id: string) {

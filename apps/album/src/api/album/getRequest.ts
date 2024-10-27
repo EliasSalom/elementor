@@ -1,8 +1,8 @@
-import { Album, Image } from "../type.ts";
+import { Album } from "../type.ts";
 import { backendInstance } from "../api.ts";
 import { useQuery } from "@tanstack/react-query";
 
-const getAlbumById = async (id: string): Promise<Array<Image>> => {
+const getAlbumById = async (id: string): Promise<Album> => {
   return (await backendInstance.get(`/album/${id}`)).data;
 };
 
