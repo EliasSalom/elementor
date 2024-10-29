@@ -1,0 +1,14 @@
+services:
+  album:
+    build:
+      context: .
+      dockerfile: docker/album.dockerfile
+    ports:
+      - "5173:5173"
+
+  server:
+    build:
+      context: .
+      dockerfile: docker/server.dockerfile
+    ports:
+      - "3000:3000"

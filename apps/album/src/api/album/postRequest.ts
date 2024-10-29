@@ -17,7 +17,7 @@ const createImage = async ({ url, albumId }: CreateImage) => {
 
 export const usePostAlbum = () => {
   return useMutation({
-    mutationKey: ["user"],
+    mutationKey: ["album"],
     mutationFn: (album: CreateAlbum) => createNewAlbum(album),
     onSuccess: () => {
       toast.success("user create successfully!");

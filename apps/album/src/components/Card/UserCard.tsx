@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   Collapse,
+  ImageList,
   Typography,
 } from "@mui/material";
 import { AlbumCard } from "./AlbumCard.tsx";
@@ -82,16 +83,24 @@ export const UserCard: FC<Props> = ({ user }) => {
         <CardContent
           sx={{ display: "flex", margin: 4, justifyContent: "space-between" }}
         >
-          {user.albums.map((album) => (
-            <AlbumCard
-              onClick={() => {
-                setAlbumId(album.id as string);
-                toggleImageDialog();
-              }}
-              key={album.id}
-              album={album}
-            />
-          ))}
+          {user.albums.length > 0 ? (
+            <ImageList cols={4} gap={3}>
+              {user.albums.map((album) => (
+                <AlbumCard
+                  onClick={() => {
+                    setAlbumId(album.id as string);
+                    toggleImageDialog();
+                  }}
+                  key={album.id}
+                  album={album}
+                />
+              ))}
+            </ImageList>
+          ) : (
+            <Typography color="error" align="center" variant="h6">
+              there is no Albums
+            </Typography>
+          )}
         </CardContent>
       </Collapse>
       {albumId && (
