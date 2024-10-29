@@ -18,19 +18,17 @@ interface Props {
   onClose: () => void;
 }
 
-interface Props {
-  albumId: string;
-  open: boolean;
-  onClose: () => void;
-}
-
 export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
   const { data, isLoading, error } = useGetAlbum(albumId);
-  console.log(data);
   const [imageUrl, setImageUrl] = useState<string>("");
   const { mutate } = useCreateImage();
+  const openImageHandler = (url: string) => {
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
   const createImage = () => {
     mutate({ albumId, url: imageUrl });
+    onClose();
+    setImageUrl("");
   };
   return (
     <Modal open={open} onClose={onClose}>
@@ -64,9 +62,12 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
         ) : data && data.images && data.images.length > 0 ? (
           <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
             {data.images.map((item) => (
-              <ImageListItem key={item.url}>
+              <ImageListItem
+                key={item.url}
+                onClick={() => openImageHandler(item.url)}
+                sx={{ cursor: "pointer" }}
+              >
                 <img
-                  srcSet={`${item.url}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
                   src={`${item.url}?w=164&h=164&fit=crop&auto=format`}
                   alt={item.title}
                   loading="lazy"

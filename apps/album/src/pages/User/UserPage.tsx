@@ -7,6 +7,7 @@ import { UserModal } from "../../components/Modal/UserModal.tsx";
 export const UserPage: FC = () => {
   const { data, isLoading } = useGetAllUsers();
   const [isOpen, setIsOpen] = useState(false);
+  console.log(data);
   const toggleImageDialog = () => setIsOpen((prev) => !prev);
   return (
     <Container>

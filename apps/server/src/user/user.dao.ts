@@ -30,7 +30,9 @@ export class UserDao {
       where: { id },
       include: {
         albums: {
-          include: { images: true },
+          include: {
+            images: true,
+          },
         },
       },
     });
