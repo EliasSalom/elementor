@@ -15,11 +15,12 @@
 
 ### How To Run
 please follow the steps to run the project
-
+### Docker Compose
 In the project `root` please run this command to build the docker images
 by running `docker compose build` AND `docker compose up`
 
 OR by running each file alone
+### Docker
 > this command to build **frontend** project
 ```shell
 docker build -t frontend -f docker/album.dockerfile .
