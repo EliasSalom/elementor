@@ -25,11 +25,6 @@ export class AlbumController {
     return this.albumService.createImage(id, createImage.url);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.albumService.getAllAlbum();
-  // }
-
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.albumService.getAlbumById(id);
@@ -46,7 +41,12 @@ export class AlbumController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  deleteAlbum(@Param('id') id: string) {
     return this.albumService.deleteAlbum(id);
+  }
+
+  @Delete('/image/:id')
+  deleteImage(@Param('id') id: string) {
+    return this.albumService.deleteImage(id);
   }
 }

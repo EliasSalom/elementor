@@ -28,18 +28,21 @@ export class AlbumDao {
   }
 
   async getAlbumById(id: string) {
-    return this.prismaClient.album.findUnique({
+    const album = await this.prismaClient.album.findUnique({
       where: { id },
       include: { images: true },
     });
+    if (album.deletedAt !== undefined) return;
+    return album;
   }
 
   async getAllAlbums(userID: string) {
-    return this.prismaClient.album.findMany({
+    const albums = await this.prismaClient.album.findMany({
       where: {
         userId: userID,
       },
       take: 20,
     });
+    return albums.filter((album) => album.deletedAt === undefined);
   }
 }

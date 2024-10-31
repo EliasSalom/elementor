@@ -7,6 +7,8 @@ import {
 import { FC, MouseEventHandler } from "react";
 import { Album } from "../../api/type.ts";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useDeleteAlbum } from "../../api/album/deleteRequest.ts";
 
 interface Props {
   album: Album;
@@ -14,6 +16,7 @@ interface Props {
 }
 export const AlbumCard: FC<Props> = ({ album, onClick }) => {
   const { data } = useGetAlbum(album.id as string);
+  const { mutate } = useDeleteAlbum();
 
   return (
     <ImageListItem>
@@ -32,9 +35,9 @@ export const AlbumCard: FC<Props> = ({ album, onClick }) => {
         actionIcon={
           <IconButton
             sx={{ color: "rgba(255, 255, 255, 0.54)" }}
-            aria-label={`info about ${album.title}`}
+            onClick={() => mutate(album.id as string)}
           >
-            {/*<InfoIcon />*/}
+            <DeleteIcon />
           </IconButton>
         }
       />

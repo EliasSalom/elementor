@@ -39,4 +39,8 @@ export class AlbumService {
   deleteAlbum(id: string) {
     return this.albumDao.deleteAlbum(id);
   }
+
+  deleteImage(id: string) {
+    return this.imageDao.deleteImage(id);
+  }
 }

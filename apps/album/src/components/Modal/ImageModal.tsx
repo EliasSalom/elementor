@@ -2,8 +2,10 @@ import {
   Box,
   Button,
   CircularProgress,
+  IconButton,
   ImageList,
   ImageListItem,
+  ImageListItemBar,
   Modal,
   TextField,
   Typography,
@@ -11,6 +13,7 @@ import {
 import { FC, useState } from "react";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
 import { useCreateImage } from "../../api/album/postRequest.ts";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 interface Props {
   albumId: string;
@@ -27,8 +30,8 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
   };
   const createImage = () => {
     mutate({ albumId, url: imageUrl });
-    onClose();
     setImageUrl("");
+    onClose();
   };
   return (
     <Modal open={open} onClose={onClose}>
@@ -43,7 +46,20 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
           borderRadius: "8px",
         }}
       >
-        <Button>add photos</Button>
+        <Box display="flex">
+          <TextField
+            autoFocus
+            margin="dense"
+            label="url"
+            type="text"
+            fullWidth
+            variant="outlined"
+            value={imageUrl}
+            onChange={(e) => setImageUrl(e.target.value)}
+            sx={{ flexGrow: 1, marginRight: 1 }}
+          />
+          <Button onClick={createImage}>add photos</Button>
+        </Box>
         {isLoading ? (
           <Box
             sx={{
@@ -67,10 +83,14 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
                 onClick={() => openImageHandler(item.url)}
                 sx={{ cursor: "pointer" }}
               >
-                <img
-                  src={`${item.url}?w=164&h=164&fit=crop&auto=format`}
-                  alt={item.title}
-                  loading="lazy"
+                <img src={item.url} alt={item.title} loading="lazy" />
+                <ImageListItemBar
+                  title={item.title}
+                  actionIcon={
+                    <IconButton sx={{ color: "rgba(255, 255, 255, 0.54)" }}>
+                      <DeleteIcon />
+                    </IconButton>
+                  }
                 />
               </ImageListItem>
             ))}
@@ -80,17 +100,6 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
             <Typography align="center" variant="h6">
               No images available in this album.
             </Typography>
-            <TextField
-              autoFocus
-              margin="dense"
-              label="url"
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-            />
-            <Button onClick={createImage}>save</Button>
           </Box>
         )}
       </Box>

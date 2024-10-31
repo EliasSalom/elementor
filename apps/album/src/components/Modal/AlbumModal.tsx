@@ -49,7 +49,7 @@ export const AlbumDialog: FC<Props> = ({ open, userId, onClose }) => {
         />
         <TextField
           margin="dense"
-          label="Album URL"
+          label="First Image URL"
           type="text"
           fullWidth
           variant="outlined"

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,18 +12,21 @@ import { AlbumCard } from "./AlbumCard.tsx";
 import { User } from "../../api/type.ts";
 import { AlbumDialog } from "../Modal/AlbumModal.tsx";
 import { ImageModal } from "../Modal/ImageModal.tsx";
+import { useDeleteUser } from "../../api/users/deleteRequest.ts";
 
 interface Props {
   user: User;
 }
 export const UserCard: FC<Props> = ({ user }) => {
   const { albums, id, name } = user;
+  const { mutate, isPending } = useDeleteUser();
   const [albumId, setAlbumId] = useState<string>();
   const [state, setState] = useState({
     isExpanded: false,
     isDialogOpen: false,
     isOpen: false,
   });
+  useEffect(() => {}, [albumId, isPending]);
   const toggleImageDialog = () =>
     setState((prevState) => ({ ...prevState, isOpen: !prevState.isOpen }));
   const toggleExpand = () =>
@@ -75,8 +78,11 @@ export const UserCard: FC<Props> = ({ user }) => {
             {state.isExpanded ? "Hide Albums" : "Show Albums"}
           </Button>
           <Button variant="outlined" onClick={toggleAlbumDialog}>
-            Add New Album
+            New Album
           </Button>
+          <button onClick={() => mutate(id)} disabled={isPending}>
+            {isPending ? "Deleting..." : "Delete User"}
+          </button>
         </Box>
       </Box>
       <Collapse in={state.isExpanded} timeout="auto" unmountOnExit>
@@ -98,7 +104,7 @@ export const UserCard: FC<Props> = ({ user }) => {
             </ImageList>
           ) : (
             <Typography color="error" align="center" variant="h6">
-              there is no Albums
+              this album is Empty
             </Typography>
           )}
         </CardContent>
