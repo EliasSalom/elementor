@@ -20,9 +20,17 @@ export class ImageDao {
     });
   }
 
+  deleteImage(id: string) {
+    return this.prismaClient.image.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
   async getAllImages(albumId: string) {
-    return this.prismaClient.image.findMany({
+    const images = await this.prismaClient.image.findMany({
       where: { albumId },
     });
+    return images.filter((image) => !image.deletedAt);
   }
 }
