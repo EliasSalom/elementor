@@ -1,14 +1,13 @@
-import { Album, Image } from "../type.ts";
 import { backendInstance } from "../api.ts";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-const deleteAlbum = async (id: string): Promise<Album> => {
+const deleteAlbum = async (id: string) => {
   return (await backendInstance.delete(`/album/${id}`)).data;
 };
 
-const deleteImage = async (id: string): Promise<Image> => {
-  return (await backendInstance.delete(`/image/${id}`)).data;
+const deleteImage = async (id: string) => {
+  return (await backendInstance.delete(`/album/image/${id}`)).data;
 };
 
 export const useDeleteAlbum = () => {

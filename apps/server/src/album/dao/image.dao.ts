@@ -31,6 +31,6 @@ export class ImageDao {
     const images = await this.prismaClient.image.findMany({
       where: { albumId },
     });
-    return images.filter((image) => !image.deletedAt);
+    return images.filter((image) => image.deletedAt === null);
   }
 }

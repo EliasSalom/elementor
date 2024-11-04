@@ -27,7 +27,6 @@ export const AlbumDialog: FC<Props> = ({ open, userId, onClose }) => {
       title: album.title,
       url: album.url,
     };
-    console.log(data);
     mutate(data);
     setAlbum({ title: "", url: "" });
     onClose();

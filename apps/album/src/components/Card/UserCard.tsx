@@ -80,9 +80,13 @@ export const UserCard: FC<Props> = ({ user }) => {
           <Button variant="outlined" onClick={toggleAlbumDialog}>
             New Album
           </Button>
-          <button onClick={() => mutate(id)} disabled={isPending}>
+          <Button
+            onClick={() => mutate(id)}
+            color={"error"}
+            disabled={isPending}
+          >
             {isPending ? "Deleting..." : "Delete User"}
-          </button>
+          </Button>
         </Box>
       </Box>
       <Collapse in={state.isExpanded} timeout="auto" unmountOnExit>

@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
 const createUser = async (data: Partial<User>): Promise<User> => {
-  console.log(data);
   return await backendInstance.post("/user", data);
 };
 
