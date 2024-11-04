@@ -46,6 +46,11 @@ export class UserDao {
       take: 20,
       include: { albums: true },
     });
-    return users.filter((user) => !user.deletedAt);
+    return users
+      .filter((user) => !user.deletedAt)
+      .map((user) => ({
+        ...user,
+        albums: user.albums?.filter((album) => album.deletedAt === null) || [],
+      }));
   }
 }

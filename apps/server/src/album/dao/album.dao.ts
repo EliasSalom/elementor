@@ -32,8 +32,13 @@ export class AlbumDao {
       where: { id },
       include: { images: true },
     });
-    if (album.deletedAt !== undefined) return;
-    return album;
+    if (album.deletedAt === null) {
+      return {
+        ...album,
+        images: album.images.filter((image) => image.deletedAt === null),
+      };
+    }
+    return null;
   }
 
   async getAllAlbums(userID: string) {
@@ -43,6 +48,6 @@ export class AlbumDao {
       },
       take: 20,
     });
-    return albums.filter((album) => album.deletedAt === undefined);
+    return albums.filter((album) => album.deletedAt === null);
   }
 }

@@ -23,7 +23,7 @@ export const AlbumCard: FC<Props> = ({ album, onClick }) => {
       {data?.images ? (
         <img
           onClick={onClick}
-          src={data.images[0]?.url}
+          src={data.images[0]?.url || "/album.png"}
           alt={album.title}
           loading="lazy"
         />

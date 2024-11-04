@@ -14,6 +14,7 @@ import { FC, useState } from "react";
 import { useGetAlbum } from "../../api/album/getRequest.ts";
 import { useCreateImage } from "../../api/album/postRequest.ts";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useDeleteImage } from "../../api/album/deleteRequest.ts";
 
 interface Props {
   albumId: string;
@@ -24,12 +25,13 @@ interface Props {
 export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
   const { data, isLoading, error } = useGetAlbum(albumId);
   const [imageUrl, setImageUrl] = useState<string>("");
-  const { mutate } = useCreateImage();
+  const { mutate: createImageMutate } = useCreateImage();
+  const { mutate: deleteImageMutate } = useDeleteImage();
   const openImageHandler = (url: string) => {
     window.open(url, "_blank", "noopener,noreferrer");
   };
   const createImage = () => {
-    mutate({ albumId, url: imageUrl });
+    createImageMutate({ albumId, url: imageUrl });
     setImageUrl("");
     onClose();
   };
@@ -78,16 +80,20 @@ export const ImageModal: FC<Props> = ({ albumId, open, onClose }) => {
         ) : data && data.images && data.images.length > 0 ? (
           <ImageList sx={{ width: 500, height: 450 }} cols={3} rowHeight={164}>
             {data.images.map((item) => (
-              <ImageListItem
-                key={item.url}
-                onClick={() => openImageHandler(item.url)}
-                sx={{ cursor: "pointer" }}
-              >
-                <img src={item.url} alt={item.title} loading="lazy" />
+              <ImageListItem key={item.url} sx={{ cursor: "pointer" }}>
+                <img
+                  onClick={() => openImageHandler(item.url)}
+                  src={item.url}
+                  alt={item.title}
+                  loading="lazy"
+                />
                 <ImageListItemBar
                   title={item.title}
                   actionIcon={
-                    <IconButton sx={{ color: "rgba(255, 255, 255, 0.54)" }}>
+                    <IconButton
+                      onClick={() => deleteImageMutate(item.id)}
+                      sx={{ color: "rgba(255, 255, 255, 0.54)" }}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   }
